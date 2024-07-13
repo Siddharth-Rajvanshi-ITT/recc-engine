@@ -53,23 +53,16 @@ export class ChefController {
   private async submitDailyMenu(category) {
     return new Promise(async (resolve, reject) => {
       const menu_type = category === '1' ? 'breakfast' : category === '2' ? 'lunch' : 'dinner';
-      console.log('Category:', menu_type);
       const menu_date = new Date().toISOString().split('T')[0];
 
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       const vote_date = yesterday.toISOString().split('T')[0];
-
-      console.log('Before checking existing daily menu');
-
       const alreadyExists = await this.checkExistingDailyMenu(menu_date, menu_type);
 
-      console.log('After checking existing daily menu');
       if (!alreadyExists.create && !alreadyExists.modify) resolve(null);
 
       const topVotedItems = await this.getVoteItemsByDate(menu_type, vote_date) as any;
-
-      console.log('Top voted items:', topVotedItems);
 
       if (!topVotedItems.length) {
         console.log("No one has voted yet, please wait!");
@@ -151,7 +144,6 @@ export class ChefController {
       this.socketController.emit('getVoteItemsByDate', { category, date });
 
       this.socketController.on('getVoteItemsByDateSuccess', (data) => {
-        console.log('Data:', data);
         resolve(data);
       });
 
@@ -166,7 +158,6 @@ export class ChefController {
       this.socketController.emit('getDailyItemSubmissionByDate', { date });
 
       this.socketController.once('getDailyItemSubmissionByDateSuccess', (response) => {
-        console.log('Response:', response);
         if (!response) {
           resolve({ create: true, modify: false });
         } else {
@@ -188,6 +179,7 @@ export class ChefController {
   }
 
   private async rolloutItems(category: string) {
+    
     this.socketController.emit('getRecommendedItems');
 
     let rollout_item = await askQuestion("Enter ID to add to rollout: ");

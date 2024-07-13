@@ -13,6 +13,8 @@ import VoteItemEventHandler from './eventHandlers/voteItems';
 import DailyUserVoteEventHandler from './eventHandlers/dailyUserVote';
 import DailyMenuItemEventHandler from './eventHandlers/dailyMenuItems';
 import DailyItemSubmissionEventHandler from './eventHandlers/dailyItemSubmission';
+import FeedbackEventHandler from './eventHandlers/feedback';
+import DailyUserFeedbackEventHandler from './eventHandlers/dailyUserFeedback';
 
 const httpServer = createServer();
 const io = new Server(httpServer, {
@@ -29,6 +31,8 @@ io.on('connection', (socket) => {
   const dailyUserVoteSocketHandler = new DailyUserVoteEventHandler(socket)
   const dailyMenuItemSocketHandler = new DailyMenuItemEventHandler(socket)
   const dailyItemSubmissionEventHandler = new DailyItemSubmissionEventHandler(socket)
+  const feedbackEventHandler = new FeedbackEventHandler(socket)
+  const dailyUserFeedbackEventHandler = new DailyUserFeedbackEventHandler(socket)
 
   recommendationEventHandler.listen()
   notificationEventHandler.listen()
@@ -36,6 +40,8 @@ io.on('connection', (socket) => {
   dailyUserVoteSocketHandler.listen()
   dailyMenuItemSocketHandler.listen()
   dailyItemSubmissionEventHandler.listen()
+  feedbackEventHandler.listen()
+  dailyUserFeedbackEventHandler.listen()
 
   console.log('A user connected');
 
